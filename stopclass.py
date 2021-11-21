@@ -33,7 +33,7 @@ class TestTime(object):
         self.newtime = datetime.strptime(a, "%Y-%m-%d %H:%M:%S")
         t =list(str(self.newtime - datetime.now()))[2:7]#.strftime("%Y-%m-%d %H:%M:%S")#暴力格式化
         self.labelF.configure(text=t)
-        print(t)
+        # print(t)
         if t == ['0', '0', ':', '0', '0']:
             sys.exit()
         self.root.after(1000, self.updateC)
@@ -55,7 +55,7 @@ if __name__ == '__main__':
             use_data=data[i]
             today_message=use_data['year']+'年，'+use_data['title']
             full_message=full_message+'\n'+today_message
-        print(full_message)
+       # print(full_message)
         history='\n\n\n\n历史上的今天'
     root = Tk()
     root.title('拯救五班学生于水火之中')
