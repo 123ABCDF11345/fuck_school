@@ -4,7 +4,7 @@ from tkinter.messagebox import *
 import sys
 import json
 import requests
-
+import os
 class TestTime(object):
     def __init__(self, master=None):
         self.root = master
@@ -35,7 +35,11 @@ class TestTime(object):
         self.labelF.configure(text=t)
         # print(t)
         if t == ['0', '0', ':', '0', '0']:
-            sys.exit()
+            try:
+                if os.system('shutdown -s -t 1') != 0:
+                    showwarning('Access Error','Could Not Shutdown')
+            finally:
+                sys.exit()
         self.root.after(1000, self.updateC)
     def exit(self,message):
         if askyesno("GUI-MESSAGEBOX","快捷键捕捉，是否退出?") == True:
@@ -46,17 +50,26 @@ class TestTime(object):
 
 if __name__ == '__main__':
     full_message=''
+    admin_message=requests.get('https://class.api.askdream.top:88/note.html')
+    admin_message.encoding='utf-8'
+    admin_message=admin_message.text
     try:
-        data=requests.get('https://www.ipip5.com/today/api.php?type=json').json()['result']
+        if admin_message  != 'display':
+            history=admin_message
+        else:
+            try:
+                data=requests.get('https://www.ipip5.com/today/api.php?type=json').json()['result']
+            except:
+                history=''
+            else:
+                for i in range(0,14,2):
+                    use_data=data[i]
+                    today_message=use_data['year']+'年，'+use_data['title']
+                    full_message=full_message+'\n'+today_message
+                history='\n\n\n\n历史上的今天'
     except:
         history=''
-    else:
-        for i in range(0,14,2):
-            use_data=data[i]
-            today_message=use_data['year']+'年，'+use_data['title']
-            full_message=full_message+'\n'+today_message
-       # print(full_message)
-        history='\n\n\n\n历史上的今天'
+    
     root = Tk()
     root.title('拯救五班学生于水火之中')
     #全屏锁定
