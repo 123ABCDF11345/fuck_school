@@ -47,6 +47,11 @@ class TestTime(object):
         else:
             pass
 
+def showit():
+    str_message='''
+新华社北京7月24日电 近日，中共中央办公厅、国务院办公厅印发了《关于进一步减轻义务教育阶段学生作业负担和校外培训负担的意见》，并发出通知，要求各地区各部门结合实际认真贯彻落实。
+'''
+    showwarning('Warning',str_message)
 
 if __name__ == '__main__':
     full_message=''
@@ -69,13 +74,14 @@ if __name__ == '__main__':
                 history='\n\n\n\n历史上的今天'
     except:
         history=''
-    
     root = Tk()
     root.title('拯救五班学生于水火之中')
     #全屏锁定
     root.attributes('-fullscreen', True)
     #倒计时类实例
     TestTime(root)
+    #
+    root.protocol("WM_DELETE_WINDOW",showit)
     #exit_button=Button(root,text='EXIT',command=sys.exit)
     #exit_button.pack()
     root.mainloop()
