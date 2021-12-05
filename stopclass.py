@@ -91,7 +91,7 @@ if __name__ == '__main__':
     #拦截窗口关闭事件
     root.protocol("WM_DELETE_WINDOW",showit)
     #调试button
-    exit_button=Button(root,text='EXIT',command=sys.exit)
-    exit_button.pack()
+#    exit_button=Button(root,text='EXIT',command=sys.exit)
+#    exit_button.pack()
     #调试结束
     root.mainloop()
