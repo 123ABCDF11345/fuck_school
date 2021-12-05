@@ -12,7 +12,7 @@ class TestTime(object):
         self.updatetime()
 
     def updatetime(self):
-        self.labelE = Label(self.root, text='\n  距离srt开始还有：',font = ('Arial' , 75))
+        self.labelE = Label(self.root, text='\n  距离晚自习开始还有：',font = ('Arial' , 75))
         self.labelE.bind_all('<F9>', self.exit)#注册快捷键
 
         self.labelE.pack()
