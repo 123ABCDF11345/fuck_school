@@ -16,7 +16,7 @@ class TestTime(object):
         self.w_com.title('Result')
         self.text_com=Text(self.w_com)
         self.text_com.pack(side=TOP, fill=BOTH)
-        self.text_com.insert(END,os.popen('D:/closedisplay.bat').readline())
+        self.text_com.insert(END,os.popen('closedisplay').readline())
     def debug(self,event):
         self.w_debug=Toplevel()
         self.w_debug.title('Debug Mode')
