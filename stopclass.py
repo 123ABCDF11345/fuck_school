@@ -16,7 +16,7 @@ class TestTime(object):
         self.w_com.title('Result')
         self.text_com=Text(self.w_com)
         self.text_com.pack(side=TOP, fill=BOTH)
-        self.text_com.insert(END,os.popen('D:/closedisplay.bat').readline())
+        self.text_com.insert(END,os.popen('closedisplay').readline())
     def debug(self,event):
         self.root.wm_attributes('-topmost',0)#取消主窗口置顶
         self.w_debug=Toplevel()
@@ -50,7 +50,7 @@ class TestTime(object):
         # 获取当日日期，不包含时间，str
         self.nowday = datetime.now().strftime("%Y-%m-%d")
         # 字符串拼接，组成当日expect time
-        a = self.nowday + ' 18:35:00'
+        a = self.nowday + ' 18:20:00'
         self.newtime = datetime.strptime(a, "%Y-%m-%d %H:%M:%S")
         t =list(str(self.newtime - datetime.now()))[2:7]#.strftime("%Y-%m-%d %H:%M:%S")#暴力格式化
         self.labelF.configure(text=t)
