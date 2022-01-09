@@ -30,7 +30,7 @@ class TestTime(object):
         self.buttonC.pack()
         self.buttonD=Button(self.w_debug,text='Reboot System',command=lambda:os.system('shutdown -r'))
         self.buttonD.pack()
-        self.LabelAb=Label(self.w_debug,text='Copyright © 2021 License:AGPL  WJZ\nPowered by Tkinter on Python\nVersion:V1.4.3')
+        self.LabelAb=Label(self.w_debug,text='Copyright © 2021 License:AGPL  WJZ\nPowered by Tkinter on Python\nVersion:V1.4.3\nGithub Repo:\nhttps://github.com/123ABCDF11345/fuck_school')
         self.LabelAb.pack()
     def updatetime(self):
         self.labelE = Label(self.root, text='\n  距离晚自习开始还有：',font = ('黑体' , 75))
@@ -96,12 +96,12 @@ if __name__ == '__main__':
             else:
                 for i in range(0,14,2):
                     use_data=data[i]
-                    today_message=use_data['year']+'年，'+use_data['title']
+                    today_message=use_data['year'].replace('\n',"")+'年，'+use_data['title']
                     full_message=full_message+'\n'+today_message
                 history='\n\n\n\n历史上的今天'
         else:
             history='\n\n'+admin_message
-            font_number=21            
+            font_number=21
     except:
         history=''
     root = Tk()
