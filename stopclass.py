@@ -30,7 +30,7 @@ class TestTime(object):
         self.buttonC.pack()
         self.buttonD=Button(self.w_debug,text='Reboot System',command=lambda:os.system('shutdown -r'))
         self.buttonD.pack()
-        self.LabelAb=Label(self.w_debug,text='Copyright © 2021 GPL-3.0 WJZ\nPowered by Tkinter on Python\nVersion:V1.4.1')
+        self.LabelAb=Label(self.w_debug,text='Copyright © 2021 License:AGPL  WJZ\nPowered by Tkinter on Python\nVersion:V1.4.3')
         self.LabelAb.pack()
     def updatetime(self):
         self.labelE = Label(self.root, text='\n  距离晚自习开始还有：',font = ('黑体' , 75))
