@@ -5,7 +5,8 @@ import sys
 import json
 import requests
 import os
-import threading
+import threading#多线程库
+from multiprocessing import  Process#多进程库
 import time
 import ctypes#退出线程用的底层库
 import inspect#同上
@@ -54,19 +55,13 @@ class TestTime(object):
         # 获取当日日期，不包含时间，str
         self.nowday = datetime.now().strftime("%Y-%m-%d")
         # 字符串拼接，组成当日expect time
-        a = self.nowday + ' 18:20:00'
+        a = self.nowday + ' 21:20:00'
         self.newtime = datetime.strptime(a, "%Y-%m-%d %H:%M:%S")
         t =list(str(self.newtime - datetime.now()))[2:7]#.strftime("%Y-%m-%d %H:%M:%S")#暴力格式化
         self.labelF.configure(text=t)
         # print(t)
         if t == ['0', '0', ':', '0', '0']:
-            t1.join(10)#10ms内干掉t1线程
-            timetoclose(self.root)#调用函数关闭窗口
-            try:
-                #os.system('closedisplay')
-                os.system('shutdown -s -t 1')
-            finally:
-                sys.exit()
+            force_exit()
         self.root.after(1000, self.updateC)#1000ms更新倒计时
 
 
@@ -75,10 +70,21 @@ def showit():
 新华社北京7月24日电 \n近日，中共中央办公厅、国务院办公厅印发了《关于进一步减轻义务教育阶段学生作业负担和校外培训负担的意见》，并发出通知，要求各地区各部门结合实际认真贯彻落实。
 '''
     showwarning('Fuck School',str_message)
+
 def timetoclose(window):
     window.destroy()#销毁窗口
 
-def isRunning(process_name):
+def force_exit():
+    timetoclose(root)
+    killer.terminate()#停止子进程
+    sys.exit()
+
+class Taskmgr_Killer(Process): #继承Process类
+    def __init__(self):
+        super(Taskmgr_Killer,self).__init__()#父类初始化
+        self.name = 'taskmgr_killer'#重写进程名
+
+    def isRunning(self,process_name):
         '''判断某一进程是否在运行'''
         try:
             #print('tasklist | findstr '+process_name)
@@ -92,25 +98,18 @@ def isRunning(process_name):
             #print("程序错误")
             return False
 
-def task_killer():
+    def run(self):
         '''干掉任务管理器'''
         while 1:
-
-            if isRunning('Taskmgr.exe'):
+            if self.isRunning('Taskmgr.exe'):
                 os.system('taskkill /IM Taskmgr.exe')
-                showwarning('Fuck School','任务管理器已被禁用')
             time.sleep(1)
 
-def force_exit():
-    '''强制退出'''
-    t1.join(10)
-    print('has stopped')
-    t1.join(1)
-    print('has stopped again')
-    root.destroy()
 
-t1 = threading.Thread(target=task_killer)
 if __name__ == '__main__':
+    #激活子进程
+    killer=Taskmgr_Killer()
+    killer.start()
     font_number=18
     full_message=''
     if len(str(datetime.now().month))==1:
@@ -123,7 +122,6 @@ if __name__ == '__main__':
         day=str(datetime.now().day)
     str_date=month+day
     #print(str_date)
-    t1.start()
     try:
         admin_message=requests.get('https://class.api.askdream.top:88/v2/list',headers=headers).json()
         try:
