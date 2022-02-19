@@ -55,7 +55,7 @@ class TestTime(object):
         # 获取当日日期，不包含时间，str
         self.nowday = datetime.now().strftime("%Y-%m-%d")
         # 字符串拼接，组成当日expect time
-        a = self.nowday + ' 21:20:00'
+        a = self.nowday + ' 18:20:00'
         self.newtime = datetime.strptime(a, "%Y-%m-%d %H:%M:%S")
         t =list(str(self.newtime - datetime.now()))[2:7]#.strftime("%Y-%m-%d %H:%M:%S")#暴力格式化
         self.labelF.configure(text=t)
