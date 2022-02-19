@@ -6,8 +6,12 @@ import json
 import requests
 import os
 import threading
-headers={'Accept':'application/json','User-Agent':'StopClass Client 2.0'}
+import time
+import ctypes#退出线程用的底层库
+import inspect#同上
+headers={'Accept':'application/json','User-Agent':'StopClass Client 1.4.4'}
 class TestTime(object):
+
     def __init__(self, master=None):
         self.root = master
         self.updatetime()
@@ -24,25 +28,25 @@ class TestTime(object):
         self.w_debug.wm_attributes('-topmost',1)#分窗口置顶
         self.buttonA=Button(self.w_debug,text='Close Display',command=self.tryclose)
         self.buttonA.pack()
-        self.buttonB=Button(self.w_debug,text='Close App',command=sys.exit)
+        self.buttonB=Button(self.w_debug,text='Close App',command=force_exit)
         self.buttonB.pack()
         self.buttonC=Button(self.w_debug,text='Shutdown System',command=lambda:os.system('shutdown -s'))
         self.buttonC.pack()
         self.buttonD=Button(self.w_debug,text='Reboot System',command=lambda:os.system('shutdown -r'))
         self.buttonD.pack()
-        self.LabelAb=Label(self.w_debug,text='Copyright © 2021 License:AGPL  WJZ\nPowered by Tkinter on Python\nVersion:V1.4.3\nGithub Repo:\nhttps://github.com/123ABCDF11345/fuck_school')
+        self.LabelAb=Label(self.w_debug,text='Copyright © 2021-2022 License:AGPL  WJZ\nPowered by Tkinter on Python\nVersion:V1.4.4\nGithub Repo:\nhttps://github.com/123ABCDF11345/fuck_school')
         self.LabelAb.pack()
     def updatetime(self):
         self.labelE = Label(self.root, text='\n  距离晚自习开始还有：',font = ('黑体' , 75))
         self.labelE.bind_all('<F10>', self.debug)
         self.labelE.pack()
-        self.labelF = Label(self.root, text="",font = ('Arial' , 75),fg='red')#空label等待更新
+        self.labelF = Label(self.root, text="",font = ('黑体' , 75),fg='red')#空label等待更新
         self.labelF.pack()
-        self.labelT = Label(self.root, text="",font = ('Arial' , 25))#空label等待更新
+        self.labelT = Label(self.root, text="",font = ('黑体' , 25))#空label等待更新
         self.labelT.pack()
-        self.labelG = Label(self.root,text=history,font = ('Arial' , font_number))
+        self.labelG = Label(self.root,text=history,font = ('黑体' , font_number))
         self.labelG.pack()
-        self.labelH = Label(self.root,text=full_message,font = ('Arial' , 18))
+        self.labelH = Label(self.root,text=full_message,font = ('黑体' , 18))
         self.labelH.pack()
         self.updateC()
 
@@ -56,13 +60,16 @@ class TestTime(object):
         self.labelF.configure(text=t)
         # print(t)
         if t == ['0', '0', ':', '0', '0']:
+            t1.join(10)#10ms内干掉t1线程
             timetoclose(self.root)#调用函数关闭窗口
             try:
-                os.system('closedisplay')
+                #os.system('closedisplay')
                 os.system('shutdown -s -t 1')
             finally:
                 sys.exit()
         self.root.after(1000, self.updateC)#1000ms更新倒计时
+
+
 def showit():
     str_message='''
 新华社北京7月24日电 \n近日，中共中央办公厅、国务院办公厅印发了《关于进一步减轻义务教育阶段学生作业负担和校外培训负担的意见》，并发出通知，要求各地区各部门结合实际认真贯彻落实。
@@ -70,6 +77,39 @@ def showit():
     showwarning('Fuck School',str_message)
 def timetoclose(window):
     window.destroy()#销毁窗口
+
+def isRunning(process_name):
+        '''判断某一进程是否在运行'''
+        try:
+            #print('tasklist | findstr '+process_name)
+            process=len(os.popen('tasklist | findstr '+process_name).readlines())
+            #print(process)
+            if process >=1 :
+                return True
+            else:
+                return False
+        except:
+            #print("程序错误")
+            return False
+
+def task_killer():
+        '''干掉任务管理器'''
+        while 1:
+
+            if isRunning('Taskmgr.exe'):
+                os.system('taskkill /IM Taskmgr.exe')
+                showwarning('Fuck School','任务管理器已被禁用')
+            time.sleep(1)
+
+def force_exit():
+    '''强制退出'''
+    t1.join(10)
+    print('has stopped')
+    t1.join(1)
+    print('has stopped again')
+    root.destroy()
+
+t1 = threading.Thread(target=task_killer)
 if __name__ == '__main__':
     font_number=18
     full_message=''
@@ -83,7 +123,7 @@ if __name__ == '__main__':
         day=str(datetime.now().day)
     str_date=month+day
     #print(str_date)
-    
+    t1.start()
     try:
         admin_message=requests.get('https://class.api.askdream.top:88/v2/list',headers=headers).json()
         try:
@@ -94,9 +134,13 @@ if __name__ == '__main__':
             except:
                 history=''
             else:
-                for i in range(0,14,2):
+                for i in range(0,15,2):
                     use_data=data[i]
                     today_message=use_data['year'].replace('\n',"")+'年，'+use_data['title']
+                    if '2022年' in today_message:
+                        today_message=''
+                    if 'www.ipip5.com' in today_message:
+                        today_message=''
                     full_message=full_message+'\n'+today_message
                 history='\n\n\n\n历史上的今天'
         else:
@@ -109,9 +153,10 @@ if __name__ == '__main__':
     #全屏锁定
     root.attributes('-fullscreen', True)
     #5秒提示
-    message2=Label(root,text='\n',font = ('Arial' , 17))
+    message2=Label(root,text='\n无 声 的 抗 议',font = ('黑体' , 19))
     message2.pack()
-    threading.Timer(0.01, timetoclose, args=(message2,)).start()#定时器线程，5s后关闭防沉迷提示
+    threading.Timer(7, timetoclose, args=(message2,)).start()#定时器线程，5s后关闭提示
+    #上面一行message2后面的逗号不能删，删了要报TypeError,不知道为什么
     #倒计时类实例
     TestTime(root)
     #窗口锁定置顶
