@@ -10,6 +10,10 @@ from multiprocessing import  Process#多进程库
 import time
 import ctypes#退出线程用的底层库
 import inspect#同上
+import logging
+import traceback
+# 引入日志
+
 headers={'Accept':'application/json','User-Agent':'StopClass Client 1.4.4'}
 class TestTime(object):
 
@@ -83,7 +87,7 @@ class Taskmgr_Killer(Process): #继承Process类
     def __init__(self):
         super(Taskmgr_Killer,self).__init__()#父类初始化
         self.name = 'taskmgr_killer'#重写进程名
-
+        logging.info('子进程激活')
     def isRunning(self,process_name):
         '''判断某一进程是否在运行'''
         try:
@@ -91,11 +95,14 @@ class Taskmgr_Killer(Process): #继承Process类
             process=len(os.popen('tasklist | findstr '+process_name).readlines())
             #print(process)
             if process >=1 :
+                logging.info('检测到任务管理器运行')
                 return True
             else:
                 return False
-        except:
-            #print("程序错误")
+        except Exception as e:
+            logging.error("Taskmgr_Killer error:")
+            logging.error(e)
+            logging.error(traceback.format_exc())
             return False
 
     def run(self):
@@ -103,6 +110,7 @@ class Taskmgr_Killer(Process): #继承Process类
         while 1:
             if self.isRunning('Taskmgr.exe'):
                 os.system('taskkill /IM Taskmgr.exe')
+                logging.info('关闭任务管理器')
             time.sleep(1)
 
 
@@ -110,6 +118,9 @@ if __name__ == '__main__':
     #激活子进程
     killer=Taskmgr_Killer()
     killer.start()
+    logging.basicConfig(filename='log.log',level=logging.DEBUG, filemode='w', format='[%(asctime)s] [%(levelname)s] >>>  %(message)s',datefmt='%Y-%m-%d %I:%M:%S')#初始化日志
+    logging.info('test')
+    print('执行了的！')
     font_number=18
     full_message=''
     if len(str(datetime.now().month))==1:
@@ -129,14 +140,19 @@ if __name__ == '__main__':
         except KeyError:
             try:
                 data=requests.get('https://www.ipip5.com/today/api.php?type=json',headers=headers).json()['result']
-            except:
+                logging.info(str(data))
+            except Exception as e:
                 history=''
+                logging.error("Main program error when get today data:")
+                logging.error(e)
+                logging.error(traceback.format_exc())
             else:
                 for i in range(0,15,2):
                     use_data=data[i]
                     today_message=use_data['year'].replace('\n',"")+'年，'+use_data['title']
                     if '2022年' in today_message:
                         today_message=''
+                        logging.debug('已移除广告')
                     if 'www.ipip5.com' in today_message:
                         today_message=''
                     full_message=full_message+'\n'+today_message
@@ -162,7 +178,7 @@ if __name__ == '__main__':
     #拦截窗口关闭事件
     root.protocol("WM_DELETE_WINDOW",showit)
     #调试button
-    #exit_button=Button(root,text='EXIT',command=sys.exit)
-    #exit_button.pack()
+    exit_button=Button(root,text='EXIT',command=force_exit)
+    exit_button.pack()
     #调试结束
     root.mainloop()
