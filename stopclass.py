@@ -21,12 +21,14 @@ class TestTime(object):
         self.root = master
         self.updatetime()
     def tryclose(self):
+        logging.debug('尝试关屏')
         self.w_com=Toplevel()
         self.w_com.title('Result')
         self.text_com=Text(self.w_com)
         self.text_com.pack(side=TOP, fill=BOTH)
         self.text_com.insert(END,os.popen('closedisplay').readline())
     def debug(self,event):
+        logging.info('Open Debug Mode')
         self.root.wm_attributes('-topmost',0)#取消主窗口置顶
         self.w_debug=Toplevel()
         self.w_debug.title('Debug Mode')
@@ -39,8 +41,18 @@ class TestTime(object):
         self.buttonC.pack()
         self.buttonD=Button(self.w_debug,text='Reboot System',command=lambda:os.system('shutdown -r'))
         self.buttonD.pack()
+        self.buttonE=Button(self.w_debug,text='Check Log',command=self.check_log)
+        self.buttonE.pack()
         self.LabelAb=Label(self.w_debug,text='Copyright © 2021-2022 License:AGPL  WJZ\nPowered by Tkinter on Python\nVersion:V1.4.4\nGithub Repo:\nhttps://github.com/123ABCDF11345/fuck_school')
         self.LabelAb.pack()
+    def check_log(self):
+        logging.debug('读日志')
+        self.w_com=Toplevel()
+        self.w_com.title('Log')
+        self.text_com=Text(self.w_com)
+        self.text_com.pack(side=TOP, fill=BOTH)
+        with open('./fucker.log','r') as fp:
+            self.text_com.insert(END,fp.read())
     def updatetime(self):
         self.labelE = Label(self.root, text='\n  距离晚自习开始还有：',font = ('黑体' , 75))
         self.labelE.bind_all('<F10>', self.debug)
@@ -76,17 +88,29 @@ def showit():
     showwarning('Fuck School',str_message)
 
 def timetoclose(window):
-    window.destroy()#销毁窗口
-
+    logging.debug('window close:'+str(type(window)))
+    try:
+        window.destroy()#销毁窗口
+    except RuntimeError:
+        pass
 def force_exit():
     timetoclose(root)
     killer.terminate()#停止子进程
     sys.exit()
 
 class Taskmgr_Killer(Process): #继承Process类
+    '''多进程类实现
+    在这个类里面print在windows环境下用不了
+    logging模块不支持多进程，所以暂时没办法打日志'''
     def __init__(self):
         super(Taskmgr_Killer,self).__init__()#父类初始化
         self.name = 'taskmgr_killer'#重写进程名
+        '''没法打的日志
+        self.logger=logging.getLogger('logger')
+        self.h1 = logging.FileHandler('killer.log')
+        self.h1.setLevel(logging.DEBUG)
+        self.h1.setFormatter(logging.Formatter('[%(asctime)s] [%(levelname)s]  :  %(message)s'))
+        self.logger.addHandler(self.h1)'''
         logging.info('子进程激活')
     def isRunning(self,process_name):
         '''判断某一进程是否在运行'''
@@ -95,32 +119,37 @@ class Taskmgr_Killer(Process): #继承Process类
             process=len(os.popen('tasklist | findstr '+process_name).readlines())
             #print(process)
             if process >=1 :
-                logging.info('检测到任务管理器运行')
+                with open('killer.log','w') as fp:
+                    fp.write('检测到任务管理器运行')
+                #self.logger.info('检测到任务管理器运行')
                 return True
             else:
                 return False
         except Exception as e:
-            logging.error("Taskmgr_Killer error:")
-            logging.error(e)
-            logging.error(traceback.format_exc())
+            with open('killer.log','w') as fp:
+                fp.write(e,traceback.format_exc())
+
+            #self.logger.error("Taskmgr_Killer error:")
+            #self.logger.error(e)
+            #self.logger.error(traceback.format_exc())
             return False
 
     def run(self):
         '''干掉任务管理器'''
         while 1:
-            if self.isRunning('Taskmgr.exe'):
-                os.system('taskkill /IM Taskmgr.exe')
-                logging.info('关闭任务管理器')
+            if self.isRunning('taskmgr.exe'):#win10是Taskmgr，不区分大小写；win7是taskmgr,区分大小写
+                os.system('taskkill /IM taskmgr.exe')
+                #self.logger.info('关闭任务管理器')
             time.sleep(1)
 
 
 if __name__ == '__main__':
+    #初始化日志
+    logging.basicConfig(filename='fucker.log',filemode='w',level=logging.INFO, format='[%(asctime)s] [%(levelname)s]  :  %(message)s',datefmt='%Y-%m-%d %I:%M:%S')
     #激活子进程
+    logging.info('主进程激活')
     killer=Taskmgr_Killer()
     killer.start()
-    logging.basicConfig(filename='log.log',level=logging.DEBUG, filemode='w', format='[%(asctime)s] [%(levelname)s] >>>  %(message)s',datefmt='%Y-%m-%d %I:%M:%S')#初始化日志
-    logging.info('test')
-    print('执行了的！')
     font_number=18
     full_message=''
     if len(str(datetime.now().month))==1:
@@ -140,7 +169,7 @@ if __name__ == '__main__':
         except KeyError:
             try:
                 data=requests.get('https://www.ipip5.com/today/api.php?type=json',headers=headers).json()['result']
-                logging.info(str(data))
+                logging.debug(str(data))
             except Exception as e:
                 history=''
                 logging.error("Main program error when get today data:")
@@ -152,24 +181,29 @@ if __name__ == '__main__':
                     today_message=use_data['year'].replace('\n',"")+'年，'+use_data['title']
                     if '2022年' in today_message:
                         today_message=''
-                        logging.debug('已移除广告')
+                        logging.debug('已移除API内容')
                     if 'www.ipip5.com' in today_message:
                         today_message=''
                     full_message=full_message+'\n'+today_message
                 history='\n\n\n\n历史上的今天'
         else:
+            logging.info('获取到公告数据，覆写历史上的今天')
             history='\n\n'+admin_message
             font_number=21
     except:
         history=''
+        logging.error('API连接失败！')
+        logging.error("Main program error when get API data:")
+        logging.error(e)
+        logging.error(traceback.format_exc())
     root = Tk()
     root.title('Fuck School')
     #全屏锁定
-    root.attributes('-fullscreen', True)
+    #root.attributes('-fullscreen', True)
     #5秒提示
     message2=Label(root,text='\n无 声 的 抗 议',font = ('黑体' , 19))
     message2.pack()
-    threading.Timer(7, timetoclose, args=(message2,)).start()#定时器线程，5s后关闭提示
+    threading.Timer(5, timetoclose, args=(message2,)).start()#定时器线程，5s后关闭提示
     #上面一行message2后面的逗号不能删，删了要报TypeError,不知道为什么
     #倒计时类实例
     TestTime(root)
@@ -178,7 +212,7 @@ if __name__ == '__main__':
     #拦截窗口关闭事件
     root.protocol("WM_DELETE_WINDOW",showit)
     #调试button
-    exit_button=Button(root,text='EXIT',command=force_exit)
-    exit_button.pack()
+    #exit_button=Button(root,text='EXIT',command=force_exit)
+    #exit_button.pack()
     #调试结束
     root.mainloop()
