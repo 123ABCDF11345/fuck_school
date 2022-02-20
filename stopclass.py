@@ -148,8 +148,8 @@ if __name__ == '__main__':
     logging.basicConfig(filename='fucker.log',filemode='w',level=logging.INFO, format='[%(asctime)s] [%(levelname)s]  :  %(message)s',datefmt='%Y-%m-%d %I:%M:%S')
     #激活子进程
     logging.info('主进程激活')
-    killer=Taskmgr_Killer()
-    killer.start()
+    #killer=Taskmgr_Killer()
+    #killer.start()
     font_number=18
     full_message=''
     if len(str(datetime.now().month))==1:
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     root = Tk()
     root.title('Fuck School')
     #全屏锁定
-    #root.attributes('-fullscreen', True)
+    root.attributes('-fullscreen', True)
     #5秒提示
     message2=Label(root,text='\n无 声 的 抗 议',font = ('黑体' , 19))
     message2.pack()
