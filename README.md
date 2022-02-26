@@ -5,7 +5,7 @@ License:AGPL(GNU AFFERO GENERAL PUBLIC LICENSE)
 
 ![AGPL](https://www.gnu.org/graphics/agplv3-with-text-162x68.png)
 
-**最新版本**v1.4.5
+**最新版本**v1.5.1
  
 ### 项目结构  
 - stopclass.py 主程序

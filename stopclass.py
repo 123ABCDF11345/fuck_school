@@ -13,8 +13,8 @@ import inspect#同上
 import logging
 import traceback
 import getopt
-version='V1.5.0'
-headers={'Accept':'application/json','User-Agent':'StopClass Client 1.4.4'}
+version='V1.5.1'
+headers={'Accept':'application/json','User-Agent':'StopClass Client 1.5.1'}
 class TestTime(object):
 
     def __init__(self, master=None):
@@ -176,7 +176,7 @@ def check_arg(argv):
 -l,--lite : 简洁模式
 --time (str)(%H:%M:%S) ： 指定倒计时时间，格式为%H:%M:%S
 --enable-taskmgr_killer : 检测任务管理器进程
---enbale-log (str): 启用日志，日志级别为(str):支持DEBUG INFO WARNING ERROR
+--enable-log (str): 启用日志，日志级别为(str):支持DEBUG INFO WARNING ERROR
 --title (str) : 指定显示标题
 --without-full-screen : 不使用全屏
 -z,--zoomed : 窗口最大化
