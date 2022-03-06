@@ -3,7 +3,6 @@ from datetime import datetime
 from tkinter.messagebox import *
 import sys
 import json
-import requests
 import os
 import threading#多线程库
 from multiprocessing import  Process#多进程库
@@ -13,10 +12,17 @@ import inspect#同上
 import logging
 import traceback
 import getopt
-version='V1.5.1'
-headers={'Accept':'application/json','User-Agent':'StopClass Client 1.5.1'}
-class TestTime(object):
+from urllib import request
+import json
+def fetch_data(url):
+    '''该函数部分借鉴了https://blog.csdn.net/qq_41800366/article/details/85847218'''
+    req = request.Request(url,headers=headers)
+    with request.urlopen(req) as f:     # 打开url请求（如同打开本地文件一样）
+        return json.loads(f.read().decode('utf-8'))  # 读数据 并编码同时利用json.loads将json格式数据转换为python对象
 
+version='V1.5.2'
+headers={'Accept':'application/json','User-Agent':'StopClass Client '+version}
+class TestTime(object):
     def __init__(self, master=None):
         self.root = master
         self.updatetime()
@@ -165,11 +171,11 @@ def check_arg(argv):
     try:
         opts, args = getopt.getopt(argv, "hlz", ["time=","window-name=", "enable-log=","enable-taskmgr_killer",'lite','title=','without-full-screen'])
     except getopt.GetoptError:#传参错误拦截
-        print("无效参数，输入-h 获取帮助信息")
+        showwarning('',"无效参数，输入-h 获取帮助信息")
         sys.exit(2)
     for opt, arg in opts:
         if opt in ['-h']:
-            print('''Help Message For Fuck School '''+version+'''\ndeveloper:123ABCDF11345 汪俊择 License:AGPL-3.0
+            showinfo('','''Help Message For Fuck School '''+version+'''\ndeveloper:123ABCDF11345 汪俊择 License:AGPL-3.0
 -----------
 参数
 -h : 显示帮助
@@ -189,7 +195,7 @@ def check_arg(argv):
   全屏显示
 -----------
 注意
-  当使用-z或-zoomed参数时会自动启用--without-full-screen
+  当使用-z或--zoomed参数时会自动启用--without-full-screen
   当使用--without-full-screen参数时不会激活zoomed状态
   当使用-l参数时不会激活--without-full-screen参数
   当不使用-z或-zoomed或--without-full-screen参数时window-name参数会执行，但屏幕不会出现''')
@@ -200,7 +206,7 @@ def check_arg(argv):
             try:
                 datetime.strptime(arg, '%H:%M:%S')
             except ValueError:
-                showerror('传参错误','time传参错误，期望的参数是%H:%M:%S')
+                showwarning('','time传参错误，期望的参数是%H:%M:%S')
                 sys.exit(2)
             else:
                 final_time=arg#留参备用
@@ -209,7 +215,7 @@ def check_arg(argv):
             if arg in ['DEBUG','INFO','WARNING','ERROR']:
                 logging.basicConfig(filename='fucker.log',filemode='w',level=arg, format='[%(asctime)s] [%(levelname)s]  :  %(message)s',datefmt='%Y-%m-%d %I:%M:%S')
             else:
-                showerror('传参错误',"enable-log传参错误，期望的参数是['DEBUG','INFO','WARNING','ERROR']")
+                showwarning('',"enable-log传参错误，期望的参数是['DEBUG','INFO','WARNING','ERROR']")
                 sys.exit(2)
         elif opt in ['--enable-taskmgr_killer']:
             enable_taskmgr=True
@@ -232,6 +238,7 @@ if __name__ == '__main__':
     zoomed='normal'
     window_name='Fuck School'
     full_screen=True#初始的变量值
+    root = Tk()#提前创建窗口
     check_arg(sys.argv[1:])
     logging.info('主进程激活')
     font_number=18#定义信息字体大小
@@ -249,12 +256,12 @@ if __name__ == '__main__':
             day=str(datetime.now().day)
         str_date=month+day
         try:
-            admin_message=requests.get('https://class.api.askdream.top:88/v2/list',headers=headers).json()
+            admin_message=fetch_data('https://class.api.askdream.top:88/v2/list')
             try:
                 admin_message=admin_message[str_date]
             except KeyError:
                 try:
-                    data=requests.get('https://www.ipip5.com/today/api.php?type=json',headers=headers).json()['result']
+                    data=fetch_data('https://www.ipip5.com/today/api.php?type=json')['result']
                     logging.debug(str(data))
                 except Exception as e:
                     history=''
@@ -276,13 +283,12 @@ if __name__ == '__main__':
                 logging.info('获取到公告数据，覆写历史上的今天')
                 history='\n\n'+admin_message
                 font_number=21
-        except:
+        except Exception as e:
             history=''
             logging.error('API连接失败！')
             logging.error("Main program error when get API data:")
             logging.error(e)
             logging.error(traceback.format_exc())
-    root = Tk()#测试：激活子进程之前拉起窗口
     if enable_taskmgr:#启用任务管理器子进程
         killer=Taskmgr_Killer()
         killer.start()
