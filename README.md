@@ -4,6 +4,7 @@
 License:AGPL(GNU AFFERO GENERAL PUBLIC LICENSE)
 
 ![AGPL](https://www.gnu.org/graphics/agplv3-with-text-162x68.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F123ABCDF11345%2Ffuck_school.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2F123ABCDF11345%2Ffuck_school?ref=badge_shield)
 
 **最新版本**v1.5.2
 
@@ -39,3 +40,7 @@ License:AGPL(GNU AFFERO GENERAL PUBLIC LICENSE)
 
 ### 特别声明
 - 技术无罪
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F123ABCDF11345%2Ffuck_school.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2F123ABCDF11345%2Ffuck_school?ref=badge_large)
