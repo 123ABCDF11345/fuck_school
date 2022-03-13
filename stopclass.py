@@ -90,7 +90,11 @@ class TestTime(object):
         # print(t)
         if t == ['0', '0', ':', '0', '0']:
             force_exit()
+        if t == ['0','2',':','0','0'] and not lite_mode:
+            message2.configure(text='最高指示：立刻到位！')
+            message2.configure(bg='black')
         self.root.after(1000, self.updateC)#1000ms更新倒计时
+
 
 
 def showit():
@@ -213,7 +217,7 @@ def check_arg(argv):
         elif opt in ['--enable-log']:
             enable_log=True
             if arg in ['DEBUG','INFO','WARNING','ERROR']:
-                logging.basicConfig(filename='fucker.log',filemode='w',level=arg, format='[%(asctime)s] [%(levelname)s]  :  %(message)s',datefmt='%Y-%m-%d %I:%M:%S')
+                logging.basicConfig(filename='./fucker.log',filemode='w',level=arg, format='[%(asctime)s] [%(levelname)s]  :  %(message)s',datefmt='%Y-%m-%d %I:%M:%S')
             else:
                 showwarning('',"enable-log传参错误，期望的参数是['DEBUG','INFO','WARNING','ERROR']")
                 sys.exit(2)
@@ -272,11 +276,9 @@ if __name__ == '__main__':
                     for i in range(0,15,2):
                         use_data=data[i]
                         today_message=use_data['year'].replace('\n',"")+'年，'+use_data['title']
-                        if '2022年' in today_message:
-                            today_message=''
-                            logging.debug('已移除API内容')
                         if 'www.ipip5.com' in today_message:
                             today_message=''
+                            logging.debug('已移除API内容')
                         full_message=full_message+'\n'+today_message
                     history='\n\n\n\n历史上的今天'
             else:
@@ -296,11 +298,9 @@ if __name__ == '__main__':
     root.title(window_name)
     root.attributes('-fullscreen', full_screen)#交给命令行检测函数处理后的变量full_screen
     if not lite_mode:
-        '''这些是强制技术'''
-        #5秒提示
-        message2=Label(root,text='\n无 声 的 抗 议',font = ('黑体' , 19))
+        message2=Label(root,text='\n最高指示：提前两分钟到位！',font = ('黑体' , 20),fg='red')
         message2.pack()
-        threading.Timer(5, timetoclose, args=(message2,)).start()#定时器线程，5s后关闭提示
+        #threading.Timer(5, timetoclose, args=(message2,)).start()#定时器线程，5s后关闭提示
         #上面一行message2后面的逗号不能删，删了要报TypeError,不知道为什么
         root.wm_attributes('-topmost',1)
         #拦截窗口关闭事件
