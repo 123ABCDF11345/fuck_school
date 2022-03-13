@@ -20,7 +20,7 @@ def fetch_data(url):
     with request.urlopen(req) as f:     # 打开url请求（如同打开本地文件一样）
         return json.loads(f.read().decode('utf-8'))  # 读数据 并编码同时利用json.loads将json格式数据转换为python对象
 
-version='V1.5.2'
+version='V1.5.3'
 headers={'Accept':'application/json','User-Agent':'StopClass Client '+version}
 class TestTime(object):
     def __init__(self, master=None):
