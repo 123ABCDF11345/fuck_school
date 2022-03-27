@@ -6,11 +6,11 @@ License:AGPL(GNU AFFERO GENERAL PUBLIC LICENSE)
 ![AGPL](https://www.gnu.org/graphics/agplv3-with-text-162x68.png)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F123ABCDF11345%2Ffuck_school.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2F123ABCDF11345%2Ffuck_school?ref=badge_large)
 
-**最新版本**v1.5.2
+**最新版本**v1.6.0
 
-### 使用方法 
+## 使用方法
 
-参数
+### 参数
 
 -h : 显示帮助
 
@@ -32,7 +32,7 @@ License:AGPL(GNU AFFERO GENERAL PUBLIC LICENSE)
 
 --check-time : 检查系统时间和网络时间差
 
-默认表现：
+### 默认表现：
 
   完整模式
 
@@ -43,7 +43,7 @@ License:AGPL(GNU AFFERO GENERAL PUBLIC LICENSE)
   全屏显示
 
 
-注意
+### 注意
 
   当使用-z或--zoomed参数时会自动启用--without-full-screen
 
