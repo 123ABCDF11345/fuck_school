@@ -283,6 +283,7 @@ if __name__ == '__main__':
                     logging.error("Main program error when get today data:")
                     logging.error(e)
                     logging.error(traceback.format_exc())
+                    logging.error(fetch_data('https://www.ipip5.com/today/api.php?type=json'))#把原始数据给日志
                 else:
                     for i in range(0,15,2):
                         use_data=data[i]
