@@ -243,8 +243,6 @@ def check_arg(argv):
             except Exception as e:
                 logging.error('获取时间比对失败')
                 logging.error(e)
-
-
 if __name__ == '__main__':
     '''命令行参数检测'''
     time_title='unknown'

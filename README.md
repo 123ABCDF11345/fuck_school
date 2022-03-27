@@ -10,28 +10,48 @@ License:AGPL(GNU AFFERO GENERAL PUBLIC LICENSE)
 
 ### 使用方法 
 
-参数 
--h : 显示帮助 
--l,--lite : 简洁模式 
---time (str)(%H:%M:%S) ： 指定倒计时时间，格式为%H:%M:%S 
---enable-taskmgr_killer : 检测任务管理器进程 
---enable-log (str): 启用日志，日志级别为(str):支持DEBUG INFO WARNING ERROR 
---title (str) : 指定显示标题 
---without-full-screen : 不使用全屏 
--z,--zoomed : 窗口最大化 
+参数
+
+-h : 显示帮助
+
+-l,--lite : 简洁模式
+
+--time (str)(%H:%M:%S) ： 指定倒计时时间，格式为%H:%M:%S
+
+--enable-taskmgr_killer : 检测任务管理器进程
+
+--enable-log (str): 启用日志，日志级别为(str):支持DEBUG INFO WARNING ERROR
+
+--title (str) : 指定显示标题
+
+--without-full-screen : 不使用全屏
+
+-z,--zoomed : 窗口最大化
+
 --window-name : 指定窗口名 
 
-默认表现：
-  完整模式 
-  禁用日志 
-  关闭检测任务管理器进程 
-  全屏显示 
+--check-time : 检查系统时间和网络时间差
 
-注意 
-  当使用-z或--zoomed参数时会自动启用--without-full-screen 
-  当使用--without-full-screen参数时不会激活zoomed状态 
-  当使用-l参数时不会激活--without-full-screen参数 
-  当不使用-z或-zoomed或--without-full-screen参数时window-name参数会执行，但屏幕不会出现 
+默认表现：
+
+  完整模式
+
+  禁用日志
+
+  关闭检测任务管理器进程
+
+  全屏显示
+
+
+注意
+
+  当使用-z或--zoomed参数时会自动启用--without-full-screen
+
+  当使用--without-full-screen参数时不会激活zoomed状态
+
+  当使用-l参数时不会激活--without-full-screen参数
+
+  当不使用-z或-zoomed或--without-full-screen参数时window-name参数会执行，但屏幕不会出现
 
 ### 项目结构  
 - stopclass.py 主程序
