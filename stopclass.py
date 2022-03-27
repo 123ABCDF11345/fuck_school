@@ -20,7 +20,7 @@ def fetch_data(url):
     with request.urlopen(req) as f:     # 打开url请求（如同打开本地文件一样）
         return json.loads(f.read().decode('utf-8'))  # 读数据 并编码同时利用json.loads将json格式数据转换为python对象
 
-version='V1.5.3'
+version='V1.6.0'
 headers={'Accept':'application/json','User-Agent':'StopClass Client '+version}
 class TestTime(object):
     def __init__(self, master=None):
@@ -173,7 +173,7 @@ class Taskmgr_Killer(Process): #继承Process类
 def check_arg(argv):
     global lite_mode,final_time,time_title,full_screen,enable_taskmgr,enable_log,zoomed,window_name
     try:
-        opts, args = getopt.getopt(argv, "hlz", ["time=","window-name=", "enable-log=","enable-taskmgr_killer",'lite','title=','without-full-screen'])
+        opts, args = getopt.getopt(argv, "hlz", ["time=","window-name=", "enable-log=","enable-taskmgr_killer",'lite','title=','without-full-screen','check-time'])
     except getopt.GetoptError:#传参错误拦截
         showwarning('',"无效参数，输入-h 获取帮助信息")
         sys.exit(2)
@@ -191,6 +191,7 @@ def check_arg(argv):
 --without-full-screen : 不使用全屏
 -z,--zoomed : 窗口最大化
 --window-name : 指定窗口名
+--check-time : 检查系统时间和网络时间差
 -----------
 默认表现：
   完整模式
@@ -232,6 +233,18 @@ def check_arg(argv):
             full_screen=False
         elif opt in ['--window-name']:
             window_name=arg
+        elif opt in ['--check-time']:
+            try:
+                if abs(int(fetch_data('http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp')['data']['t'][:10]) - time.time()) >= 10:#abs:绝对值
+                    showwarning('','系统时间与网络时间误差在十秒以上，请校准时间')
+                    sys.exit(2)
+                else:
+                    logging.info('时间正确')
+            except Exception as e:
+                logging.error('获取时间比对失败')
+                logging.error(e)
+
+
 if __name__ == '__main__':
     '''命令行参数检测'''
     time_title='unknown'
